@@ -1,65 +1,61 @@
 import turtle
 
-def draw_figure(input_str):
-    # Dividimos la cadena en el primer espacio encontrado
-    tipo, _, tamaño = input_str.partition(" ")
+def draw_figure():
+    while True:
+        input_str = turtle.textinput("Ingrese la figura", "Tipo de figura y tamaño (ejemplo: cuadrado 100):")
+        if input_str is None:
+            # Si el usuario da clic en "Cancelar" o cierra la ventana, salir del bucle y cerrar el programa
+            break
 
-    # Verificar si se ingresaron tres parámetros
-    if not (tipo and tamaño):
-        print("Entrada inválida. Debe ingresar el tipo de figura seguido del tamaño.")
-        return
+        try:
+            turtle.clear()  # Limpiar la pantalla de Turtle
 
-    turtle.reset()  # Limpiar la pantalla de Turtle
+            # Dividir la entrada en tipo y tamaño
+            tipo, _, tamaño = input_str.partition(" ")
 
-    # Dibujar la figura en la ventana de Turtle
-    try:
-        tamaño = int(tamaño)
-        if tipo.lower() == 'cuadrado':
-            cuadrado(tamaño)
-        elif tipo.lower() == 'circulo':
-            circulo(tamaño)
-        elif tipo.lower() == 'triangulo':
-            triangulo(tamaño)
-        elif tipo.lower() == 'hexagono':
-            hexagono(tamaño)
-        else:
-            print("Figura no soportada.")
-    except ValueError:
-        print("El tamaño debe ser un número entero.")
+            # Verificar la validez de la entrada
+            if not (tipo and tamaño):
+                print("Entrada inválida. Debe ingresar el tipo de figura seguido del tamaño.")
+                continue
 
-    # Pedir otro comando
-    input_str = turtle.textinput("Ingrese la figura", "Tipo de figura y tamaño (ejemplo: cuadrado 100):")
-    if input_str:
-        draw_figure(input_str)
+            tamaño = int(tamaño)
+            if tipo.lower() in ('cuadrado', 'triangulo', 'hexagono'):
+                dibujar_poligono(tipo.lower(), tamaño)
+            elif tipo.lower() == 'circulo':
+                dibujar_circulo(tamaño)
+            else:
+                print("Figura no soportada.")
 
-def cuadrado(lado):
-    for i in range(4):
-        turtle.forward(lado)
-        turtle.left(90)
+        except ValueError:
+            print("El tamaño debe ser un número entero.")
 
-def triangulo(lado):
-    for i in range(3):
-        turtle.forward(lado)
-        turtle.left(120)
+    # Cerrar la ventana de Turtle
+    turtle.bye()
 
-def circulo(radio):
+def dibujar_poligono(tipo, tamaño):
+    # Determinar el número de lados según el tipo de polígono
+    if tipo == 'cuadrado':
+        lados = 4
+    elif tipo == 'triangulo':
+        lados = 3
+    elif tipo == 'hexagono':
+        lados = 6
+
+    # Dibujar el polígono
+    for _ in range(lados):
+        turtle.forward(tamaño)
+        turtle.left(360 / lados)
+
+def dibujar_circulo(radio):
     turtle.begin_fill()
     turtle.circle(radio)
     turtle.end_fill()
 
-def hexagono(lado):
-    for i in range(6):
-        turtle.forward(lado)
-        turtle.left(60)
-
-# Configuración de la ventana de Turtle
+# Configurar la ventana de Turtle
 turtle.setup(width=700, height=700)
 turtle.title("Dibujar Figura")
 
-# Obtener entrada del usuario para la primera figura
-input_str = turtle.textinput("Ingrese la figura", "Tipo de figura y tamaño (ejemplo: cuadrado 100):")
-
-if input_str:
-    draw_figure(input_str)
+# Llamar a la función principal para empezar el programa
+draw_figure()
 
 turtle.done()
