@@ -39,4 +39,7 @@ h1 {
 .main_sect .organization .funcionalidad .former input {
   font-size: 20px;
   width: 80%;
+}
+.main_sect .organization .preci_image img {
+  width: 75%;
 }/*# sourceMappingURL=styles.css.map */
