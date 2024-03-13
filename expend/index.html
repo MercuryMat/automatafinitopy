@@ -4,30 +4,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
     <title>Máquina Expendedora</title>
 </head>
 
 <body>
-    <h1>Automatizador de Máquina Expendedora</h1>
-    <form id="formulario">
-        <label for="entrada">Ingrese 'A' si hay un producto, seguido del código del producto (por ejemplo, 'C0'):
-        </label>
-        <input type="text" id="entrada" name="entrada">
-        <br>
-        <button type="button" onclick="main()">Procesar</button>
-    </form>
+    <section class="main_sect">
+        <div class="organization">
+            <div class="funcionalidad">
+                <h1>Automatizador de Máquina Expendedora</h1>
+                <form class="former" id="formulario">
+                    <label for="entrada">Ingrese 'A' si hay un producto, seguido del código del producto (por ejemplo,
+                        'C0') seguido de esto coloque el valor a pagar (X, O), todo en Mayuscula:<br>
+                        X = 1000 <br>
+                        O = 500
+                    </label>
+                    <br>
+                    <input type="text" id="entrada" name="entrada">
+                    <br>
+                    <button type="button" onclick="main()" id="boton">Procesar</button>
+                    <h2 id="Result">Resultado de la Operacion</h2>
+                    <h2 id="preci"></h2>
+                    <button type="button" onclick="clean()">Limpiar</button>
+
+                </form>
+            </div>
+            <div class="preci_image">
+
+            </div>
+        </div>
+    </section>
     <script>
-        const alfabeto_figuras = ["A", "C", "P", "G", "0", "1", "2", "X", "O"];
+        const alfabeto_inicial = ["A"];
+        const alfabeto_letra = ["C", "P", "G"];
+        const alfabeto_nums = ["0", "1", "2"];
+        const alfabeto_preci = ["X", "O"];
         const estados = ["q0", "q1", "q2", "q3", "q4", "q5", "q6"];
         const estado_ini = "q0";
         const estado_f = "q6";
+        const estado_act = "";
+        var cont = 0;
+        let aux = "";
 
         function checkLetter(letter) {
             return alfabeto_figuras.includes(letter);
-        }       
+        }
 
         function obtenerPrecio(codigo_producto) {
-            // Define los precios de los productos
             const precios = {
                 "C0": 500,
                 "C1": 1000,
@@ -41,13 +69,141 @@
             };
             return precios[codigo_producto] || null;
         }
-       
-        function main() {
-            let leer_automata = document.getElementById("entrada").value;
-            if(leer_automata )
+        function obtenerNombre(codigo_producto) {
+            const Nombre_prod = {
+                "G0": "Galletas",
+                "G1": "Gansito",
+                "G2": "Gaseosa",
+                "P0": "Papas",
+                "P1": "Popeta",
+                "P2": "Paleta",
+                "C0": "Chicles",
+                "C1": "Chetos",
+                "C2": "Cocosete"
+            };
+            return Nombre_prod[codigo_producto] || null;
         }
-        
+        function esAutomata(text) {
+            if ((alfabeto_inicial.includes(text[0])) && (alfabeto_letra.includes(text[1])) && (alfabeto_nums.includes(text[2])) && (alfabeto_preci.includes(text[3]))) {
+                // Encontrar la posición de la 'X' o 'O'
+                var indiceXO = text.indexOf('X');
+                if (indiceXO === -1) {
+                    indiceXO = text.indexOf('O');
+                }
 
+                // Verificar si hay caracteres después de 'X' o 'O'
+                if (indiceXO !== -1 && indiceXO < text.length - 1) {
+                    // Extraer la subcadena de caracteres después de 'X' o 'O'
+                    var caracteresDespues = text.substring(indiceXO + 1);
+
+                    // Verificar si los caracteres son solo 'X' o 'O' usando una expresión regular
+                    if (/^[XO]+$/.test(caracteresDespues)) {
+                        return true;
+                    } else {
+                        return false; // Agregamos este return para manejar el caso contrario
+                    }
+                } else {
+                    return true; // Si no hay caracteres después de 'X' o 'O', se cumple la condición
+                }
+            } else {
+                cont = 0;
+                return false;
+            }
+        }
+        function clean() {
+            let result_automata = document.getElementById("Result");
+            let finish_automata = document.getElementById("preci");
+            result_automata.textContent = "Resultado de la Operacion";
+            finish_automata.textContent = "";
+        }
+        function main() {
+
+            let leer_automata = document.getElementById("entrada").value;
+            let result_automata = document.getElementById("Result");
+            let finish_automata = document.getElementById("preci");
+            if (!leer_automata == "") {
+                console.log(estados[cont]);
+                if (esAutomata(leer_automata)) {
+                    if (alfabeto_inicial.includes(leer_automata[0])) {
+                        cont++;
+                        console.log(estados[cont]);
+                        if (alfabeto_letra.includes(leer_automata[1])) {
+                            cont++;
+                            console.log(estados[cont]);
+                            if (alfabeto_nums.includes(leer_automata[2])) {
+                                cont++;
+                                console.log(estados[cont]);
+                                if (alfabeto_preci.includes(leer_automata[3])) {
+                                    let code1 = leer_automata[1];
+                                    let code2 = leer_automata[2];
+                                    aux = code1 + code2;
+                                    let valor_producto = calcularPrecio(leer_automata.substring(3));
+                                    let precio_product = obtenerPrecio(aux);
+                                    let nom_product = obtenerNombre(aux);
+                                    let diferencia = 0;
+                                    console.log(leer_automata.substring(3));
+                                    console.log(valor_producto);
+                                    result_automata.textContent = "El producto seleccionado es: " + nom_product + " y su precio es de: " + precio_product;
+                                    if (valor_producto == precio_product) {
+                                        cont += 2;
+                                        finish_automata.textContent = "Se ingreso " + valor_producto + " Es automata, producto entregado";
+                                        console.log(estados[cont]);
+                                    } else if (valor_producto < precio_product) {
+                                        diferencia = precio_product - valor_producto;
+                                        finish_automata.textContent = "Se ingreso " + valor_producto + " le falta " + diferencia + "vuelva a ingresar los datos";
+                                        cont += 1;
+                                        console.log(estados[cont]);
+                                    } else {
+                                        diferencia = valor_producto - precio_product;
+                                        finish_automata.textContent = "Se ingreso " + valor_producto + " ingreso de mas " + diferencia + " vuelva a ingresar los datos";
+                                        cont += 1;
+                                        console.log(estados[cont]);
+                                    }
+                                    console.log(precio_product);
+                                    cont = 0;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    cont = 0;
+                    alert("No es automata");
+                    if (alfabeto_inicial.includes(leer_automata[0])) {
+                        console.log(estados[cont])
+                        if (alfabeto_letra.includes(leer_automata[1])) {
+                            cont += 1;
+                            console.log(estados[cont])
+                            if (alfabeto_nums.includes(leer_automata[2])) {
+                                cont += 1;
+                                console.log(estados[cont])
+                                if (alfabeto_preci.includes(leer_automata[3])) {
+                                    cont += 1;
+                                    console.log(estados[cont])
+                                }
+                            }
+                        }
+                    }
+
+                }
+            } else {
+                alert("Esta vacio");
+                console.log(estados[cont])
+            }
+        }
+        function calcularPrecio(cadena) {
+            let suma = 0;
+            for (let i = 0; i < cadena.length; i++) {
+                if (cadena[i] == "X") suma += 1000
+                else if (cadena[i] == "O") suma += 500
+            }
+            return suma;
+        }
+        document.getElementById("entrada").addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevenir el comportamiento predeterminado de "Enter" en un campo de entrada (enviar formulario)
+                document.getElementById("boton").click(); // Hacer clic en el botón cuando se presiona "Enter"
+            }
+        });
     </script>
 </body>
 
