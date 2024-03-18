@@ -29,6 +29,35 @@ h1 {
   align-items: center;
   justify-content: center;
 }
+.main_sect .organization .funcionalidad h1 span {
+  color: #fbbc04;
+}
+.main_sect .organization .funcionalidad .lista {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+}
+.main_sect .organization .funcionalidad .lista .uno {
+  margin-right: 100px;
+}
+.main_sect .organization .funcionalidad .lista .uno h2 {
+  font-family: "Madimi One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.main_sect .organization .funcionalidad .lista .uno ul {
+  display: flex;
+  margin-left: -50px;
+}
+.main_sect .organization .funcionalidad .lista .dos h2 {
+  font-weight: 500;
+}
+.main_sect .organization .funcionalidad .lista .dos ul {
+  margin-left: -38px;
+}
+.main_sect .organization .funcionalidad .lista .listita {
+  list-style: none;
+}
 .main_sect .organization .funcionalidad .former {
   width: 100%;
   display: flex;
@@ -39,6 +68,10 @@ h1 {
 .main_sect .organization .funcionalidad .former input {
   font-size: 20px;
   width: 80%;
+  margin: 20px 10px;
+}
+.main_sect .organization .funcionalidad .former button {
+  margin: 50px;
 }
 .main_sect .organization .preci_image img {
   width: 75%;
